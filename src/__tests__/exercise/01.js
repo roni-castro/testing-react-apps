@@ -11,11 +11,15 @@ const clickEvent = new MouseEvent('click', {
   view: window,
 })
 
+beforeEach(() => {
+  document.body.innerHTML = ''
+})
+
 test('counter increments and decrements when the buttons are clicked', () => {
   const div = document.createElement('div')
   document.body.append(div)
   ReactDOM.render(<Counter />, div)
-  const [decrementBtn, incrementBtn] = div.querySelectorAll('button')
+  const [decrementBtn, incrementBtn] = document.body.querySelectorAll('button')
   const messageDiv = div.firstChild.querySelector('div')
 
   expect(messageDiv.textContent).toBe('Current count: 0')
@@ -23,8 +27,6 @@ test('counter increments and decrements when the buttons are clicked', () => {
   expect(messageDiv.textContent).toBe('Current count: 1')
   decrementBtn.dispatchEvent(clickEvent)
   expect(messageDiv.textContent).toBe('Current count: 0')
-
-  div.remove()
 })
 
 /* eslint no-unused-vars:0 */
