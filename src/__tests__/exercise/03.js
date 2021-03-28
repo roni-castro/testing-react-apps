@@ -9,9 +9,9 @@ import Counter from '../../components/counter'
 test('counter increments and decrements when the buttons are clicked', () => {
   render(<Counter />)
 
-  const decrement = screen.getByText('Decrement')
-  const increment = screen.getByRole('button', {name: 'Increment'})
-  const message = screen.getByText(/Current count: 0/)
+  const decrement = screen.getByText(/decrement/i)
+  const increment = screen.getByRole('button', {name: /increment/i})
+  const message = screen.getByText(/Current count: /i)
   expect(message).toHaveTextContent('Current count: 0')
   userEvent.click(increment)
   expect(message).toHaveTextContent('Current count: 1')
