@@ -22,11 +22,11 @@ test('counter increments and decrements when the buttons are clicked', () => {
   const [decrementBtn, incrementBtn] = document.body.querySelectorAll('button')
   const messageDiv = div.firstChild.querySelector('div')
 
-  expect(messageDiv.textContent).toBe('Current count: 0')
+  expect(messageDiv).toHaveTextContent('Current count: 0')
   incrementBtn.dispatchEvent(clickEvent)
-  expect(messageDiv.textContent).toBe('Current count: 1')
+  expect(messageDiv).toHaveTextContent('Current count: 1')
   decrementBtn.dispatchEvent(clickEvent)
-  expect(messageDiv.textContent).toBe('Current count: 0')
+  expect(messageDiv).toHaveTextContent('Current count: 0')
 })
 
 /* eslint no-unused-vars:0 */
