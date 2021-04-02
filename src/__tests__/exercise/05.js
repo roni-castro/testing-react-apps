@@ -35,3 +35,27 @@ test(`logging in displays the user's username`, async () => {
 
   expect(screen.getByText(username))
 })
+
+test('message `username required` is shown if this field is not typed', async () => {
+  render(<Login />)
+  const {password} = buildLoginForm()
+
+  userEvent.type(screen.getByLabelText(/password/i), password)
+  userEvent.click(screen.getByRole('button', {name: /submit/i}))
+
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+
+  expect(screen.getByRole('alert')).toHaveTextContent(/username required/i)
+})
+
+test('message `password required` is shown if this field is not typed', async () => {
+  render(<Login />)
+  const {username} = buildLoginForm()
+
+  userEvent.type(screen.getByLabelText(/username/i), username)
+  userEvent.click(screen.getByRole('button', {name: /submit/i}))
+
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
+
+  expect(screen.getByRole('alert')).toHaveTextContent(/password required/i)
+})
