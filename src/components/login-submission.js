@@ -62,6 +62,7 @@ function useFormSubmission({endpoint, data}) {
             dispatch({type: 'REJECT', error: data})
           }
         })
+        .catch(error => dispatch({type: 'REJECT', error}))
     }
   }, [fetchBody, endpoint])
 
