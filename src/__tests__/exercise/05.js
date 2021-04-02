@@ -19,7 +19,12 @@ const buildLoginForm = build({
 
 const server = setupServer(
   rest.post('https://auth-provider.example.com/api/login', (req, res, ctx) => {
-    return res(ctx.json({username: 'user name'}))
+    if (!req.body.username) {
+      return res(ctx.status(400).json({message: 'username is required'}))
+    } else if (!req.body.password) {
+      return res(ctx.status(400).json({message: 'password is required'}))
+    }
+    return res(ctx.json({username: req.body.username}))
   }),
 )
 beforeAll(() => server.listen())
@@ -30,17 +35,11 @@ test(`logging in displays the user's username`, async () => {
   render(<Login />)
   const {username, password} = buildLoginForm()
 
-  server.use(
-    rest.post('https://auth-provider.example.com/api/login', (req, res, ctx) =>
-      res(ctx.json({username})),
-    ),
-  )
-
   userEvent.type(screen.getByLabelText(/username/i), username)
   userEvent.type(screen.getByLabelText(/password/i), password)
   userEvent.click(screen.getByRole('button', {name: /submit/i}))
 
-  await waitForElementToBeRemoved(() => screen.getByLabelText('loading...'))
+  await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
   expect(screen.getByText(username))
 })
