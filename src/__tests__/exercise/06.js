@@ -19,6 +19,7 @@ beforeAll(() => {
     getCurrentPosition: jest.fn(),
   }
 })
+
 test('displays the users current location', async () => {
   const fakePosition = {
     coords: {
@@ -43,6 +44,10 @@ test('displays the users current location', async () => {
   })
 
   expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument()
-  expect(screen.getByText(/latitude: -11/i)).toBeInTheDocument()
-  expect(screen.getByText(/longitude: -22/i)).toBeInTheDocument()
+  expect(screen.getByText(/latitude/i)).toHaveTextContent(
+    `Latitude: ${fakePosition.coords.latitude}`,
+  )
+  expect(screen.getByText(/longitude/i)).toHaveTextContent(
+    `Longitude: ${fakePosition.coords.longitude}`,
+  )
 })
