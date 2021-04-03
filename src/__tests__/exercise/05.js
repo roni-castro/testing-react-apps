@@ -76,15 +76,9 @@ test('shows generic message on server failure', async () => {
     ),
   )
   render(<Login />)
-  const {username, password} = buildLoginForm()
 
-  userEvent.type(screen.getByLabelText(/username/i), username)
-  userEvent.type(screen.getByLabelText(/password/i), password)
   userEvent.click(screen.getByRole('button', {name: /submit/i}))
-
   await waitForElementToBeRemoved(() => screen.getByLabelText(/loading/i))
 
-  expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
-    `"${errorMessage}"`,
-  )
+  expect(screen.getByRole('alert')).toHaveTextContent(errorMessage)
 })
