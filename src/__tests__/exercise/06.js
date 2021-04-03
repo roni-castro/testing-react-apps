@@ -16,10 +16,10 @@ test('displays the users current location', async () => {
     },
   }
 
-  let setPositionState
+  let setHookValue
   useCurrentPosition.mockImplementation(() => {
     const [state, setState] = React.useState([])
-    setPositionState = setState
+    setHookValue = setState
     return state
   })
 
@@ -28,7 +28,7 @@ test('displays the users current location', async () => {
   expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
 
   act(() => {
-    setPositionState([fakePosition])
+    setHookValue([fakePosition])
   })
 
   expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument()
@@ -37,5 +37,28 @@ test('displays the users current location', async () => {
   )
   expect(screen.getByText(/longitude/i)).toHaveTextContent(
     `Longitude: ${fakePosition.coords.longitude}`,
+  )
+})
+
+test('displays the error when current location is not found', async () => {
+  let setHookValue
+  useCurrentPosition.mockImplementation(() => {
+    const [state, setState] = React.useState([])
+    setHookValue = setState
+    return state
+  })
+
+  render(<Location />)
+
+  expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
+
+  const errorMessage = 'Error fetching the coordinates'
+  act(() => {
+    setHookValue([undefined, {message: errorMessage}])
+  })
+
+  expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument()
+  expect(screen.getByRole('alert').textContent).toMatchInlineSnapshot(
+    `"Error fetching the coordinates"`,
   )
 })
