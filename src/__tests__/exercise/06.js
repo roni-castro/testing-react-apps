@@ -4,21 +4,9 @@
 import * as React from 'react'
 import {render, screen, act} from '@testing-library/react'
 import Location from '../../examples/location'
+import {useCurrentPosition} from 'react-use-geolocation'
 
-function deferred() {
-  let resolve, reject
-  const promise = new Promise((res, rej) => {
-    resolve = res
-    reject = rej
-  })
-  return {promise, resolve, reject}
-}
-
-beforeAll(() => {
-  global.navigator.geolocation = {
-    getCurrentPosition: jest.fn(),
-  }
-})
+jest.mock('react-use-geolocation')
 
 test('displays the users current location', async () => {
   const fakePosition = {
@@ -28,19 +16,19 @@ test('displays the users current location', async () => {
     },
   }
 
-  const {promise, resolve} = deferred()
-
-  global.navigator.geolocation.getCurrentPosition.mockImplementation(
-    successCallback => promise.then(() => successCallback(fakePosition)),
-  )
+  let setPositionState
+  useCurrentPosition.mockImplementation(() => {
+    const [state, setState] = React.useState([])
+    setPositionState = setState
+    return state
+  })
 
   render(<Location />)
 
   expect(screen.getByLabelText(/loading/i)).toBeInTheDocument()
 
-  await act(async () => {
-    resolve()
-    await promise
+  act(() => {
+    setPositionState([fakePosition])
   })
 
   expect(screen.queryByLabelText(/loading/i)).not.toBeInTheDocument()
