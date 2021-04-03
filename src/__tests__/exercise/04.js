@@ -7,10 +7,10 @@ import userEvent from '@testing-library/user-event'
 import Login from '../../components/login'
 import faker from 'faker'
 
-function buildLoginForm() {
+function buildLoginForm({password, username}) {
   return {
-    username: faker.internet.userName(),
-    password: faker.internet.password(),
+    username: username ?? faker.internet.userName(),
+    password: password ?? faker.internet.password(),
   }
 }
 
@@ -19,7 +19,7 @@ test('submitting the form calls onSubmit with username and password', () => {
   const handleOnSubmit = data => (submittedData = data)
   render(<Login onSubmit={handleOnSubmit} />)
 
-  const {username, password} = buildLoginForm()
+  const {username, password} = buildLoginForm({password: 'abc'})
   userEvent.type(screen.getByLabelText(/username/i), username)
   userEvent.type(screen.getByLabelText(/password/i), password)
 
