@@ -1,22 +1,11 @@
 // testing custom hooks
 // http://localhost:3000/counter-hook
 
-import * as React from 'react'
-import {render, act} from '@testing-library/react'
+import {renderHook, act} from '@testing-library/react-hooks'
 import useCounter from '../../components/use-counter'
 
-function setup(initialProps) {
-  let result = {}
-  function TestComponent(props) {
-    result.current = useCounter(props)
-    return null
-  }
-  render(<TestComponent {...initialProps} />)
-  return result
-}
-
 test('exposes the count and increment/decrement functions', () => {
-  const result = setup()
+  const {result} = renderHook(() => useCounter())
 
   expect(result.current.count).toBe(0)
   act(() => result.current.increment())
@@ -26,12 +15,12 @@ test('exposes the count and increment/decrement functions', () => {
 })
 
 test('allows customization of the initialCount props', () => {
-  const result = setup({initialCount: 2})
+  const {result} = renderHook(() => useCounter({initialCount: 2}))
   expect(result.current.count).toBe(2)
 })
 
 test('allows customization of the step props', () => {
-  const result = setup({step: 2})
+  const {result} = renderHook(() => useCounter({step: 2}))
 
   expect(result.current.count).toBe(0)
   act(() => result.current.increment())
