@@ -5,17 +5,37 @@ import * as React from 'react'
 import {render, act} from '@testing-library/react'
 import useCounter from '../../components/use-counter'
 
-test('exposes the count and increment/decrement functions', () => {
-  let result
+function setup(initialProps) {
+  let result = {}
   function TestComponent(props) {
-    result = useCounter(props)
+    result.current = useCounter(props)
     return null
   }
-  render(<TestComponent step={2} />)
+  render(<TestComponent {...initialProps} />)
+  return result
+}
 
-  expect(result.count).toBe(0)
-  act(() => result.increment())
-  expect(result.count).toBe(2)
-  act(() => result.decrement())
-  expect(result.count).toBe(0)
+test('exposes the count and increment/decrement functions', () => {
+  const result = setup()
+
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(1)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
+})
+
+test('allows customization of the initialCount props', () => {
+  const result = setup({initialCount: 2})
+  expect(result.current.count).toBe(2)
+})
+
+test('allows customization of the step props', () => {
+  const result = setup({step: 2})
+
+  expect(result.current.count).toBe(0)
+  act(() => result.current.increment())
+  expect(result.current.count).toBe(2)
+  act(() => result.current.decrement())
+  expect(result.current.count).toBe(0)
 })
