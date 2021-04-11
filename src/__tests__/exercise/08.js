@@ -20,11 +20,12 @@ test('allows customization of the initialCount props', () => {
 })
 
 test('allows customization of the step props', () => {
-  const {result} = renderHook(() => useCounter({step: 2}))
+  const {result, rerender} = renderHook(useCounter, {initialProps: {step: 2}})
 
   expect(result.current.count).toBe(0)
   act(() => result.current.increment())
   expect(result.current.count).toBe(2)
+  rerender({step: 1})
   act(() => result.current.decrement())
-  expect(result.current.count).toBe(0)
+  expect(result.current.count).toBe(1)
 })
